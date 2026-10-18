@@ -1,0 +1,1381 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b16">
+<title>RecallAI — Intelligence Dashboard</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #080b16;
+    --surface: rgba(18, 25, 45, 0.82);
+    --surface-hover: rgba(24, 33, 59, 0.96);
+    --border: rgba(142, 158, 205, 0.15);
+    --text: #f0f3ff;
+    --muted: #8e9ab9;
+    --purple: #9381ff;
+    --blue: #54a9ff;
+    --green: #5ee6b0;
+    --radius: 20px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: 'Inter', Arial, sans-serif;
+    background:
+        radial-gradient(ellipse at 10% 0%, rgba(91, 73, 204, .16), transparent 38%),
+        radial-gradient(ellipse at 100% 35%, rgba(42, 117, 208, .11), transparent 36%),
+        var(--bg);
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(132, 151, 206, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(132, 151, 206, .025) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+/* HEADER */
+
+header {
+    position: relative;
+    padding: 25px max(5%, calc((100% - 1440px) / 2));
+    border-bottom: 1px solid var(--border);
+    background: rgba(9, 13, 26, .78);
+    backdrop-filter: blur(20px);
+}
+
+.topbar {
+    max-width: 1440px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(173, 153, 255, .4);
+    border-radius: 15px;
+    font-size: 25px;
+    background: linear-gradient(145deg, #29244e, #151d37);
+    box-shadow: 0 0 28px rgba(130, 103, 255, .17),
+                inset 0 1px rgba(255,255,255,.1);
+}
+
+.brand h1 {
+    font-size: 24px;
+    letter-spacing: -1px;
+    margin: 0;
+    font-weight: 800;
+}
+
+.brand h1 span {
+    color: var(--purple);
+}
+
+.brand p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px;
+    border: 1px solid rgba(94, 230, 176, .19);
+    border-radius: 30px;
+    color: #a4f5d4;
+    background: rgba(38, 145, 103, .09);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .7px;
+}
+
+.live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    50% { opacity: .45; box-shadow: 0 0 3px var(--green); }
+}
+
+/* MAIN LAYOUT */
+
+main {
+    width: min(1440px, 92%);
+    margin: 0 auto;
+    padding: 38px 0 50px;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #b7aaff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.hero {
+    margin-bottom: 30px;
+    animation: fadeUp .65s ease both;
+}
+
+.hero h2 {
+    margin: 14px 0 10px;
+    font-size: clamp(29px, 4vw, 43px);
+    line-height: 1.15;
+    letter-spacing: -1.8px;
+}
+
+.hero h2 span {
+    color: transparent;
+    background: linear-gradient(90deg, #ad9bff, #65baff);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.hero p {
+    margin: 0;
+    max-width: 650px;
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+/* OVERVIEW */
+
+.overview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.metric {
+    position: relative;
+    overflow: hidden;
+    padding: 21px 23px;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: linear-gradient(135deg, rgba(23, 31, 56, .85), rgba(14, 20, 38, .9));
+    transition: transform .3s ease, border-color .3s ease,
+                box-shadow .3s ease;
+    animation: fadeUp .65s ease both;
+}
+
+.metric:hover {
+    transform: translateY(-5px);
+    border-color: rgba(147, 129, 255, .48);
+    box-shadow: 0 15px 38px rgba(0,0,0,.23),
+                0 0 24px rgba(111, 92, 255, .08);
+}
+
+.metric::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: -40px;
+    top: -45px;
+    border-radius: 50%;
+    background: rgba(130, 110, 255, .12);
+    filter: blur(24px);
+    pointer-events: none;
+}
+
+.metric-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.metric-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.metric-icon {
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    border-radius: 12px;
+    background: rgba(147, 129, 255, .12);
+    border: 1px solid rgba(147, 129, 255, .17);
+    font-size: 17px;
+}
+
+.metric strong {
+    display: block;
+    margin-top: 15px;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+}
+
+.metric small {
+    display: block;
+    margin-top: 6px;
+    color: #7f8cac;
+    font-size: 11px;
+}
+
+/* SECTION HEADER */
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 34px 0 17px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.3px;
+}
+
+.section-heading p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.section-tag {
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: #a5b2d2;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .8px;
+}
+
+/* 3D CARDS */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    perspective: 1200px;
+    align-items: stretch;
+}
+
+.card {
+    position: relative;
+    min-width: 0;
+    padding: 25px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(145deg,
+        rgba(23, 31, 55, .91),
+        rgba(13, 19, 36, .95));
+    box-shadow: 0 12px 28px rgba(0,0,0,.12),
+                inset 0 1px rgba(255,255,255,.025);
+    transform-style: preserve-3d;
+    transition: transform .32s cubic-bezier(.2,.8,.2,1),
+                border-color .32s ease,
+                box-shadow .32s ease,
+                background .32s ease;
+    animation: fadeUp .65s ease both;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    width: 76%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(171,157,255,.45), transparent);
+    opacity: .65;
+    pointer-events: none;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    right: -95px;
+    bottom: -110px;
+    background: rgba(100, 102, 255, .12);
+    border-radius: 50%;
+    filter: blur(35px);
+    transition: opacity .3s ease, transform .3s ease;
+    opacity: .35;
+    pointer-events: none;
+}
+
+.card:hover {
+    transform: perspective(1000px) translateY(-6px) rotateX(1deg);
+    border-color: rgba(143, 127, 255, .43);
+    background: linear-gradient(145deg,
+        rgba(26, 35, 63, .97),
+        rgba(15, 22, 43, .98));
+    box-shadow: 0 22px 50px rgba(0,0,0,.27),
+                0 0 0 1px rgba(145, 126, 255, .05),
+                0 0 28px rgba(108, 93, 255, .07);
+}
+
+.card:hover::after {
+    opacity: 1;
+    transform: translate(-15px, -15px);
+}
+
+.card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-icon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    font-size: 21px;
+    background: linear-gradient(145deg, rgba(145,127,255,.21), rgba(77,146,255,.08));
+    border: 1px solid rgba(157,143,255,.2);
+    box-shadow: inset 0 1px rgba(255,255,255,.07);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.card:hover .card-icon {
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 8px 20px rgba(115, 96, 255, .15);
+}
+
+.card-head h2 {
+    margin: 3px 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -.35px;
+}
+
+.card-head p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* FORMS */
+
+label {
+    display: block;
+    margin: 17px 0 8px;
+    color: #bdc7e1;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+input, textarea, select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #303c5b;
+    border-radius: 10px;
+    outline: none;
+    color: #eff2ff;
+    background: rgba(8, 14, 29, .83);
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color .22s ease, box-shadow .22s ease,
+                background .22s ease;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #63708e;
+}
+
+input:hover, textarea:hover, select:hover {
+    border-color: #4a577b;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #9381ff;
+    background: rgba(12, 19, 38, .98);
+    box-shadow: 0 0 0 3px rgba(147,129,255,.12),
+                0 0 18px rgba(147,129,255,.05);
+}
+
+textarea {
+    min-height: 105px;
+    resize: vertical;
+    line-height: 1.65;
+}
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    background: #111a30;
+    color: white;
+}
+
+/* BUTTONS */
+
+button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 43px;
+    margin-top: 17px;
+    padding: 12px 16px;
+    overflow: hidden;
+    border: 1px solid rgba(190,180,255,.2);
+    border-radius: 10px;
+    background: linear-gradient(110deg, #7763ed, #5f7cf5);
+    color: white;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1px;
+    cursor: pointer;
+    box-shadow: 0 5px 16px rgba(105,89,230,.15);
+    transition: transform .22s ease, box-shadow .22s ease,
+                filter .22s ease, border-color .22s ease;
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -110%;
+    width: 60%;
+    height: 100%;
+    transform: skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.17), transparent);
+    transition: left .55s ease;
+    pointer-events: none;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 9px 24px rgba(105,89,230,.28);
+    border-color: rgba(211,204,255,.4);
+}
+
+button:hover::before {
+    left: 150%;
+}
+
+button:active {
+    transform: translateY(0) scale(.99);
+}
+
+button:disabled {
+    opacity: .65;
+    cursor: wait;
+    transform: none;
+}
+
+button.secondary {
+    color: #d4ddf7;
+    background: linear-gradient(120deg, #263450, #202b45);
+    border-color: #374665;
+    box-shadow: none;
+}
+
+button.secondary:hover {
+    background: linear-gradient(120deg, #344565, #293755);
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+
+button.accent-blue {
+    background: linear-gradient(110deg, #347fd8, #546af0);
+    box-shadow: 0 5px 16px rgba(61,118,225,.15);
+}
+
+button.accent-blue:hover {
+    box-shadow: 0 9px 24px rgba(61,118,225,.25);
+}
+
+/* OUTPUT PANEL */
+
+.output-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(11, 16, 31, .94);
+    box-shadow: 0 16px 40px rgba(0,0,0,.16);
+}
+
+.output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(23,31,54,.65);
+}
+
+.output-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.terminal-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff777f;
+}
+
+.terminal-dots span:nth-child(2) { background: #f4c66e; }
+.terminal-dots span:nth-child(3) { background: #59d8a2; }
+
+.output-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.output-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #8c9bb9;
+    font-size: 10px;
+}
+
+.output-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6f7d99;
+}
+
+.output-status.working {
+    color: #c0b5ff;
+}
+
+.output-status.working::before {
+    background: #a294ff;
+    animation: pulse .8s infinite;
+}
+
+.output-status.success {
+    color: #72e4b4;
+}
+
+.output-status.success::before {
+    background: #5ee6b0;
+}
+
+.output-status.error {
+    color: #ff9caa;
+}
+
+.output-status.error::before {
+    background: #ff778a;
+}
+
+.copy-btn {
+    width: auto;
+    min-height: 29px;
+    margin: 0;
+    padding: 6px 10px;
+    font-size: 10px;
+    border-radius: 7px;
+}
+
+#output {
+    margin: 0;
+    padding: 22px;
+    min-height: 155px;
+    max-height: 420px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #a7f3ce;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    line-height: 1.85;
+    scrollbar-width: thin;
+    scrollbar-color: #3d4969 transparent;
+}
+
+#output.empty {
+    color: #7583a2;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    color: #687695;
+    font-size: 10px;
+}
+
+.footer strong {
+    color: #a7b2d0;
+}
+
+/* ANIMATIONS */
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.grid .card:nth-child(2) { animation-delay: .06s; }
+.grid .card:nth-child(3) { animation-delay: .12s; }
+.grid .card:nth-child(4) { animation-delay: .18s; }
+
+/* RESPONSIVE */
+
+@media (min-width: 1200px) {
+    main {
+        padding-top: 46px;
+    }
+
+    .grid {
+        gap: 23px;
+    }
+
+    .card {
+        padding: 28px;
+    }
+}
+
+@media (max-width: 760px) {
+    header {
+        padding: 19px 4%;
+    }
+
+    .brand h1 {
+        font-size: 21px;
+    }
+
+    .brand p {
+        max-width: 190px;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .logo {
+        width: 42px;
+        height: 42px;
+        font-size: 22px;
+    }
+
+    .live-pill {
+        padding: 9px 10px;
+        font-size: 9px;
+    }
+
+    main {
+        width: 92%;
+        padding-top: 30px;
+    }
+
+    .overview {
+        gap: 12px;
+    }
+
+    .metric {
+        padding: 16px;
+    }
+
+    .metric strong {
+        font-size: 18px;
+    }
+
+    .metric-label {
+        font-size: 10px;
+    }
+
+    .metric-icon {
+        width: 31px;
+        height: 31px;
+        font-size: 14px;
+    }
+
+    .grid {
+        gap: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 540px) {
+    .topbar {
+        align-items: flex-start;
+    }
+
+    .brand {
+        gap: 10px;
+    }
+
+    .brand p {
+        max-width: 165px;
+    }
+
+    .live-pill {
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .live-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    main {
+        width: 91%;
+        padding-top: 26px;
+    }
+
+    .hero h2 {
+        font-size: 31px;
+        letter-spacing: -1.3px;
+    }
+
+    .hero p {
+        font-size: 12px;
+    }
+
+    .overview {
+        grid-template-columns: 1fr;
+        gap: 11px;
+    }
+
+    .metric {
+        padding: 15px 17px;
+    }
+
+    .metric-top {
+        flex-direction: row;
+    }
+
+    .metric strong {
+        margin-top: 9px;
+        font-size: 20px;
+    }
+
+    .metric small {
+        font-size: 10px;
+    }
+
+    .grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 15px;
+    }
+
+    .card {
+        padding: 21px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+    }
+
+    .section-heading h2 {
+        font-size: 15px;
+    }
+
+    .section-tag {
+        font-size: 9px;
+    }
+
+    .output-header {
+        padding: 14px;
+    }
+
+    #output {
+        padding: 16px;
+        font-size: 11px;
+    }
+
+    .footer {
+        font-size: 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="topbar">
+        <div class="brand">
+            <div class="logo">🧠</div>
+            <div>
+                <h1>Recall<span>AI</span></h1>
+                <p>Persistent memory · Multi-agent intelligence</p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="live-pill">
+                <span class="live-dot"></span>
+                API DASHBOARD
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <div class="eyebrow">✦ INTELLIGENCE WORKSPACE</div>
+        <h2>Your agents.<br><span>One shared intelligence.</span></h2>
+        <p>
+            Manage persistent memories, coordinate intelligent agents
+            and explore task execution from one unified workspace.
+        </p>
+    </section>
+
+    <section class="overview">
+        <div class="metric">
+            <div class="metric-top">
+                <span class="metric-label">Memory Management</span>
+                <div class="metric-icon">◈</div>
+            </div>
+            <strong>Persistent</strong>
+            <small>Save and retrieve agent memories</small>
+        </div>
+
+        <div class="metric">
+            <div class="metric-top">
+                <span class="metric-label">Agent Coordination</span>
+                <div class="metric-icon">⇄</div>
+            </div>
+            <strong>Multi-Agent</strong>
+            <small>Assign and execute tasks across agents</small>
+        </div>
+
+        <div class="metric">
+            <div class="metric-top">
+                <span class="metric-label">API Integration</span>
+                <div class="metric-icon">⌘</div>
+            </div>
+            <strong>Connected UI</strong>
+            <small>Interact with your existing API endpoints</small>
+        </div>
+    </section>
+
+    <div class="section-heading">
+        <div>
+            <h2>Workspace</h2>
+            <p>Manage memory and agent operations</p>
+        </div>
+        <span class="section-tag">CONTROL CENTER</span>
+    </div>
+
+    <div class="grid">
+
+        <!-- SAVE MEMORY -->
+        <section class="card">
+            <div class="card-head">
+                <div class="card-icon">◈</div>
+                <div>
+                    <h2>Save a Memory</h2>
+                    <p>Store knowledge for future agent interactions.</p>
+                </div>
+            </div>
+
+            <label for="memoryAgent">Agent ID</label>
+            <input id="memoryAgent" value="agent-A"
+                   placeholder="Enter agent ID">
+
+            <label for="memoryContent">Memory Content</label>
+            <textarea id="memoryContent"
+                placeholder="Enter a fact the agent should remember"></textarea>
+
+            <label for="visibility">Memory Visibility</label>
+            <select id="visibility">
+                <option value="shared">Shared with agents</option>
+                <option value="private">Private to this agent</option>
+            </select>
+
+            <button onclick="saveMemory()">
+                <span>＋</span> Save Memory
+            </button>
+        </section>
+
+        <!-- AGENT COORDINATION -->
+        <section class="card">
+            <div class="card-head">
+                <div class="card-icon">⇄</div>
+                <div>
+                    <h2>Agent Coordination</h2>
+                    <p>Delegate work between collaborating agents.</p>
+                </div>
+            </div>
+
+            <label for="task">Task Description</label>
+            <textarea id="task"
+                placeholder="Describe the task to be assigned"></textarea>
+
+            <label for="fromAgent">From Agent</label>
+            <input id="fromAgent" value="agent-A"
+                   placeholder="Source agent ID">
+
+            <label for="toAgent">To Agent</label>
+            <input id="toAgent" value="agent-B"
+                   placeholder="Target agent ID">
+
+            <button onclick="assignTask()">
+                <span>➤</span> Assign Task
+            </button>
+
+            <button class="secondary" onclick="executeTask()">
+                <span>▶</span> Execute Latest Assigned Task
+            </button>
+        </section>
+
+        <!-- RETRIEVE MEMORIES -->
+        <section class="card">
+            <div class="card-head">
+                <div class="card-icon">⌕</div>
+                <div>
+                    <h2>Retrieve Memories</h2>
+                    <p>Access stored knowledge and search by keyword.</p>
+                </div>
+            </div>
+
+            <label for="searchAgent">Agent ID</label>
+            <input id="searchAgent" value="agent-B"
+                   placeholder="Enter agent ID">
+
+            <button class="accent-blue" onclick="loadMemories()">
+                <span>↓</span> Load Accessible Memories
+            </button>
+
+            <label for="keyword">Search Keyword</label>
+            <input id="keyword" placeholder="e.g. FalkorDB">
+
+            <button class="secondary" onclick="searchMemory()">
+                <span>⌕</span> Search Memories
+            </button>
+        </section>
+
+        <!-- COORDINATION HISTORY -->
+        <section class="card">
+            <div class="card-head">
+                <div class="card-icon">◷</div>
+                <div>
+                    <h2>Coordination History</h2>
+                    <p>Review recorded agent coordination events.</p>
+                </div>
+            </div>
+
+            <label for="historyAgent">Agent ID</label>
+            <input id="historyAgent" value="agent-B"
+                   placeholder="Enter agent ID">
+
+            <button onclick="loadHistory()">
+                <span>↻</span> Load Task History
+            </button>
+
+            <div style="
+                margin-top: 18px;
+                padding: 13px 14px;
+                border: 1px solid rgba(142,158,205,.12);
+                border-radius: 10px;
+                background: rgba(8,14,29,.55);
+                color: #8795b4;
+                font-size: 11px;
+                line-height: 1.8;">
+                <span style="color:#a99aff;">●</span>
+                History is retrieved from your backend.
+                <br>
+                <span style="color:#a99aff;">●</span>
+                Select an agent to view recorded events.
+            </div>
+        </section>
+
+    </div>
+    
+<section class="card" style="margin-bottom: 22px;">
+    <h2>📊 Task Monitor</h2>
+    <p>Track task status and agent coordination in real time.</p>
+
+    <div class="grid">
+        <div class="card">
+            <small>Total Tasks</small>
+            <h2 id="totalTasks">0</h2>
+        </div>
+        <div class="card">
+            <small>Assigned</small>
+            <h2 id="assignedTasks">0</h2>
+        </div>
+        <div class="card">
+            <small>Completed</small>
+            <h2 id="completedTasks">0</h2>
+        </div>
+    </div>
+
+    <button onclick="loadTaskMonitor()">↻ Refresh Tasks</button>
+
+    <div id="taskList" style="margin-top: 16px;">
+        Click Refresh Tasks to load tasks.
+    </div>
+</section>
+
+
+    <!-- API RESPONSE -->
+    <div class="section-heading">
+        <div>
+            <h2>Activity & API Response</h2>
+            <p>View results and responses from dashboard actions.</p>
+        </div>
+        <span class="section-tag">LIVE OUTPUT</span>
+    </div>
+
+    <section class="output-card">
+        <div class="output-header">
+            <div class="output-title">
+                <div class="terminal-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span>Response Console</span>
+            </div>
+
+            <div class="output-actions">
+                <span class="output-status" id="outputStatus">READY</span>
+                <button class="secondary copy-btn"
+                        onclick="copyOutput()">
+                    Copy Output
+                </button>
+            </div>
+        </div>
+
+        <pre id="output" class="empty">Welcome to RecallAI.
+
+Select an action above to interact with your API.
+Your response will appear here.</pre>
+    </section>
+
+    <footer class="footer">
+        <span><strong>RecallAI</strong> · Intelligence Workspace</span>
+        <span>Persistent Memory · Multi-Agent Coordination</span>
+    </footer>
+
+</main>
+
+<script>
+const output = document.getElementById("output");
+const outputStatus = document.getElementById("outputStatus");
+
+function setStatus(status, text) {
+    outputStatus.className = "output-status " + status;
+    outputStatus.textContent = text;
+}
+
+async function api(path, method = "GET", body = null) {
+    output.textContent = "Processing request...\nPlease wait for the API response.";
+    output.classList.remove("empty");
+    setStatus("working", "PROCESSING");
+
+    const buttons = Array.from(document.querySelectorAll("button"));
+    buttons.forEach(button => button.disabled = true);
+
+    try {
+        const options = {
+            method,
+            headers: {}
+        };
+
+        if (body !== null) {
+            options.headers["Content-Type"] = "application/json";
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(path, options);
+        const raw = await response.text();
+
+        let data;
+        try {
+            data = raw ? JSON.parse(raw) : {};
+        } catch {
+            data = { response: raw };
+        }
+
+        output.textContent = JSON.stringify(data, null, 2);
+
+        if (!response.ok) {
+            output.textContent =
+                "Error " + response.status + "\n\n" +
+                JSON.stringify(data, null, 2);
+
+            setStatus("error", "REQUEST FAILED");
+            return null;
+        }
+
+        setStatus("success", "RESPONSE RECEIVED");
+        return data;
+
+    } catch (error) {
+        output.textContent =
+            "Request failed: " + error.message +
+            "\n\nCheck that your backend server is running and the API route is accessible.";
+
+        setStatus("error", "CONNECTION ERROR");
+        return null;
+
+    } finally {
+        buttons.forEach(button => button.disabled = false);
+    }
+}
+
+function saveMemory() {
+    const agent = document.getElementById("memoryAgent").value.trim();
+    const content = document.getElementById("memoryContent").value.trim();
+
+    if (!agent || !content) {
+        showMessage("Please enter both Agent ID and Memory Content.");
+        return;
+    }
+
+    return api("/memories", "POST", {
+        agent_id: agent,
+        content: content,
+        visibility: document.getElementById("visibility").value
+    });
+}
+
+function loadMemories() {
+    const id = document.getElementById("searchAgent").value.trim();
+
+    if (!id) {
+        showMessage("Please enter an Agent ID.");
+        return;
+    }
+
+    return api("/memories/" + encodeURIComponent(id));
+}
+
+function searchMemory() {
+    const id = document.getElementById("searchAgent").value.trim();
+    const keyword = document.getElementById("keyword").value.trim();
+
+    if (!id || !keyword) {
+        showMessage("Please enter an Agent ID and a search keyword.");
+        return;
+    }
+
+    return api(
+        "/search/" + encodeURIComponent(id) +
+        "?q=" + encodeURIComponent(keyword)
+    );
+}
+
+function assignTask() {
+    const task = document.getElementById("task").value.trim();
+    const fromAgent = document.getElementById("fromAgent").value.trim();
+    const toAgent = document.getElementById("toAgent").value.trim();
+
+    if (!task || !fromAgent || !toAgent) {
+        showMessage("Please fill in the task description and both Agent IDs.");
+        return;
+    }
+
+    return api("/run-demo", "POST", {
+        task: task,
+        from_agent: fromAgent,
+        to_agent: toAgent
+    });
+}
+
+function executeTask() {
+    const agent = document.getElementById("toAgent").value.trim();
+
+    if (!agent) {
+        showMessage("Please enter the target Agent ID.");
+        return;
+    }
+
+    return api("/execute-task", "POST", {
+        agent_id: agent
+    });
+}
+
+function loadHistory() {
+    const id = document.getElementById("historyAgent").value.trim();
+
+    if (!id) {
+        showMessage("Please enter an Agent ID.");
+        return;
+    }
+
+    return api("/coordination/" + encodeURIComponent(id));
+}
+
+function showMessage(message) {
+    output.textContent = message;
+    output.classList.remove("empty");
+    setStatus("error", "CHECK INPUT");
+}
+
+async function copyOutput() {
+    try {
+        await navigator.clipboard.writeText(output.textContent);
+        setStatus("success", "COPIED");
+    } catch {
+        setStatus("error", "COPY UNAVAILABLE");
+    }
+}
+
+async function loadTaskMonitor() {
+    const container = document.getElementById("taskList");
+    container.textContent = "Loading tasks...";
+
+    try {
+        const response = await fetch("/tasks");
+        if (!response.ok) {
+            throw new Error("Could not load tasks: " + response.status);
+        }
+
+        const data = await response.json();
+        const tasks = data.tasks || [];
+
+        document.getElementById("totalTasks").textContent =
+            data.total ?? tasks.length;
+
+        document.getElementById("assignedTasks").textContent =
+            tasks.filter(t => t.status === "assigned").length;
+
+        document.getElementById("completedTasks").textContent =
+            tasks.filter(t => t.status === "completed").length;
+
+        container.replaceChildren();
+
+        if (tasks.length === 0) {
+            container.textContent = "No tasks found yet.";
+            return;
+        }
+
+        tasks.forEach(task => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style.marginTop = "10px";
+
+            const title = document.createElement("h3");
+            title.textContent = task.task || "Untitled task";
+
+            const status = document.createElement("p");
+            status.textContent = "Status: " + (task.status || "unknown");
+
+            const agents = document.createElement("p");
+            agents.textContent =
+                "Created by: " + (task.created_by || "Unknown") +
+                " | Assigned to: " + (task.assigned_to || "Unknown");
+
+            const result = document.createElement("p");
+            result.textContent = "Result: " + (task.result || "Not available");
+
+            card.append(title, status, agents, result);
+            container.appendChild(card);
+        });
+    } catch (error) {
+        container.textContent = error.message;
+    }
+}
+</script>
+
+</body>
+</html> 
